@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>歡迎頁面</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #000;
+      color: #fff;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #000;
+    }
+
+    .video-section {
+      padding: 16px;
+      text-align: center;
+    }
+
+    .video-section h1 {
+      margin: 0 0 8px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .video-section p {
+      margin: 0 0 12px;
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    video {
+      width: 100%;
+      max-height: 60vh;
+      border-radius: 12px;
+      background: #000;
+      outline: none;
+    }
+
+    .gallery {
+      padding: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      background: #111;
+    }
+
+    .gallery img {
+      width: 30%;
+      max-width: 160px;
+      border-radius: 10px;
+      object-fit: cover;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .gallery img:active,
+    .gallery img:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+    }
+
+    /* 放大圖用的全螢幕遮罩 */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal img {
+      max-width: 95vw;
+      max-height: 95vh;
+      border-radius: 10px;
+    }
+
+    .modal-close {
+      position: fixed;
+      top: 12px;
+      right: 16px;
+      font-size: 32px;
+      color: #fff;
+      cursor: pointer;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- 上方：歡迎影片 -->
+    <section class="video-section">
+      <h1>潮光-土地的禮物</h1>
+
+
+      <!-- 自動播放 + 靜音 + 點一下變全螢幕 -->
+      <video
+        id="welcomeVideo"
+        autoplay
+        muted
+        playsinline
+        controls
+        preload="metadata"
+        poster="video-poster.jpg"
+      >
+        <!-- 建議準備 MP4（相容性最好），MOV 可當備援 -->
+        <source src="welcome.mp4" type="video/mp4" />
+        <source src="welcome.mov" type="video/quicktime" />
+        您的瀏覽器不支援影片播放，請更新瀏覽器或使用其他瀏覽器。
+      </video>
+
+      <p style="font-size:12px;color:#888;margin-top:6px;">
+        🔊 如需有聲全螢幕播放，請點擊影片畫面。
+      </p>
+    </section>
+
+    <!-- 下方：三張圖片縮圖 -->
+    <section class="gallery">
+      <!-- 請把 img1.jpg / img2.jpg / img3.jpg 換成你的 JPG 檔 -->
+      <img src="img1.jpg" alt="圖片 1" data-full="img1.jpg" />
+      <img src="img2.jpg" alt="圖片 2" data-full="img2.jpg" />
+      <img src="img3.jpg" alt="圖片 3" data-full="img3.jpg" />
+    </section>
+  </div>
+
+  <!-- 點圖片放大用的 Modal -->
+  <div id="imageModal" class="modal">
+    <span id="modalClose" class="modal-close">&times;</span>
+    <img id="modalImg" src="" alt="放大圖片" />
+  </div>
+
+  <script>
+    // ===== 圖片：點擊放大 =====
+    const galleryImages = document.querySelectorAll(".gallery img");
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImg");
+    const modalClose = document.getElementById("modalClose");
+
+    galleryImages.forEach((img) => {
+      img.addEventListener("click", () => {
+        const fullSrc = img.dataset.full || img.src;
+        modalImg.src = fullSrc;
+        modal.classList.add("show");
+      });
+    });
+
+    modalClose.addEventListener("click", () => {
+      modal.classList.remove("show");
+      modalImg.src = "";
+    });
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.remove("show");
+        modalImg.src = "";
+      }
+    });
+
+    // ===== 影片：點一下 → 嘗試進入全螢幕 =====
+    const v = document.getElementById("welcomeVideo");
+
+    v.addEventListener("click", () => {
+      // 部分瀏覽器支援標準 Fullscreen API
+      if (v.requestFullscreen) {
+        v.requestFullscreen();
+      }
+      // iOS Safari 比較特別，需要用 webkitEnterFullscreen
+      else if (v.webkitEnterFullscreen) {
+        v.webkitEnterFullscreen();
+      }
+      // 其他前綴（比較舊的 Android）
+      else if (v.mozRequestFullScreen) {
+        v.mozRequestFullScreen();
+      } else if (v.msRequestFullscreen) {
+        v.msRequestFullscreen();
+      }
+    });
+  </script>
+</body>
+</html>
