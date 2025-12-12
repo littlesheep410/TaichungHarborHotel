@@ -50,23 +50,23 @@
       outline: none;
     }
 
-    .gallery {
-      padding: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      background: #fff;      /* 圖片區白底 */
-    }
+.gallery {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;   /* ⬅ 改成垂直排列 */
+  align-items: center;      /* 置中（選擇性） */
+  gap: 20px;                /* 圖片間距 */
+  background: #fff;
+}
 
-    .gallery img {
-      width: 30%;
-      max-width: 160px;
-      border-radius: 10px;
-      object-fit: cover;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
+.gallery img {
+  width: 90%;               /* 換成寬度撐滿手機畫面 */
+  max-width: 500px;         /* 限制最大寬度，避免太大 */
+  border-radius: 10px;
+  object-fit: contain;      /* 讓菜單不被裁切 */
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
     .gallery img:active,
     .gallery img:hover {
@@ -191,3 +191,4 @@
   </script>
 </body>
 </html>
+
